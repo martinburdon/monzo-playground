@@ -63,6 +63,7 @@
         requestAccountDetails(body)
         .then((data) => {
           requestBalance(data, accessToken);
+          requestTransactions(data, accessToken);
         });
       }
     });
@@ -103,11 +104,36 @@
       qs: {
         account_id: userId
       }
-    }
+    };
 
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body);
+      } else {
+        console.log('error ', error);
+      }
+    });
+  };
+
+  function requestTransactions(data, accessToken) {
+    var dat = JSON.parse(data);
+    var userId = dat.accounts[0].id;
+    var url = "https://api.monzo.com/transactions";
+
+    var options = {
+      uri: url,
+      headers: {
+        Authorization: 'Bearer ' + accessToken
+      },
+      qs: {
+        account_id: userId
+      }
+    };
+
+    request(options, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var transactions = JSON.parse(body);
+        console.log(transactions);
       } else {
         console.log('error ', error);
       }
