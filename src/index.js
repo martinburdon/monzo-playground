@@ -90,3 +90,6 @@
 
   var app = new App();
 })();
+
+
+// browserify src/index.js -o src/bundle.js -d
