@@ -9,6 +9,7 @@
   "author": "Martin Burdon",
   "license": "ISC",
   "devDependencies": {
+    "babelify": "^7.3.0"
   },
   "dependencies": {
     "browserify": "^13.1.0",
