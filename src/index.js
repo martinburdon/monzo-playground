@@ -1,7 +1,12 @@
 (function() {
   'use strict';
 
-  var request = require('request')
+  var request = require('request');
+
+  // var redirectUri = 'http://localhost:8888/Apps/monzo-playground/index.html';
+  var redirectUri = 'http://localhost:8888/monzo-playground/index.html';
+  var clientId = 'oauthclient_00009CaBEXgA33A8vbCqQL';
+  var clientSecret = 'WXIXJDX1zNpWUFvpjRtFrT1/T/X/NFx1JUQfIE4HNYF/6L0nON4An5ciMMlbcEM0nYAy5Kgvtpc+75F8alzk';
 
   function App() {
     checkQueryString();
@@ -29,20 +34,14 @@
     return(false);
   }
 
+  // Redirect to Monzo to get an authorizationCode
   function authoriseUser() {
-    var clientId = 'oauthclient_00009CaBEXgA33A8vbCqQL';
-    // var redirectUri = 'http://localhost:8888/Apps/monzo-playground/index.html';
-    var redirectUri = 'http://localhost:8888/monzo-playground/index.html';
-    var stateToken = 'xcvbngfdtr5y67iuyjhm';
-    var url = "https://auth.getmondo.co.uk/?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code&state=" + stateToken;
+    var url = "https://auth.getmondo.co.uk/?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code&state=xcvbngfdtr5y67iuyjhm";
     window.open(url);
   };
 
+  // Get an access token so we can make requests
   function getAccessToken(authorizationCode) {
-    var clientId = 'oauthclient_00009CaBEXgA33A8vbCqQL';
-    // var redirectUri = 'http://localhost:8888/Apps/monzo-playground/index.html';
-    var redirectUri = 'http://localhost:8888/monzo-playground/index.html';
-    var clientSecret = 'WXIXJDX1zNpWUFvpjRtFrT1/T/X/NFx1JUQfIE4HNYF/6L0nON4An5ciMMlbcEM0nYAy5Kgvtpc+75F8alzk';
     var url = "https://api.monzo.com/oauth2/token";
 
     var options = {
@@ -59,13 +58,10 @@
 
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
         var dat = JSON.parse(body);
         var accessToken = dat.access_token;
         requestAccountDetails(body)
         .then((data) => {
-          console.log('requestBalance');
-          console.log('sfdd ', accessToken);
           requestBalance(data, accessToken);
         });
       }
@@ -93,6 +89,7 @@
     });
   };
 
+  // Get balance
   function requestBalance(data, accessToken) {
     var dat = JSON.parse(data);
     var userId = dat.accounts[0].id;
@@ -110,7 +107,7 @@
 
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body) // Show the HTML for the Google homepage.
+        console.log(body);
       } else {
         console.log('error ', error);
       }
