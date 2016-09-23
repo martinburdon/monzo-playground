@@ -58,34 +58,38 @@
     };
 
     request(options, function (error, response, body) {
-      console.log(error);
       if (!error && response.statusCode == 200) {
-        console.log(body) // Show the HTML for the Google homepage.
-        // requestBalance(body);
-        requestAccountDetails(body);
+        console.log(body);
+        var dat = JSON.parse(body);
+        var accessToken = dat.access_token;
+        requestAccountDetails(body)
+        .then((data) => {
+          console.log('requestBalance');
+          console.log('sfdd ', accessToken);
+          requestBalance(data, accessToken);
+        });
       }
     });
   };
 
+  // Get users name, creation date and account ID
   function requestAccountDetails(data) {
-    var dat = JSON.parse(data);
-    console.log(dat);
+    return new Promise((resolve, reject) => {
+      var dat = JSON.parse(data);
+      var url = "https://api.monzo.com/accounts";
 
-    var url = "https://api.monzo.com/accounts";
-
-    var options = {
-      uri: url,
-      headers: {
-        Authorization: 'Bearer ' + dat.access_token
+      var options = {
+        uri: url,
+        headers: {
+          Authorization: 'Bearer ' + dat.access_token
+        }
       }
-    }
 
-    request(options, function (error, response, body) {
-      console.log(error);
-      if (!error && response.statusCode == 200) {
-        console.log(body) // Show the HTML for the Google homepage.
-        requestBalance(body, dat.access_token);
-      }
+      request(options, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          resolve(body);
+        }
+      });
     });
   };
 
@@ -105,9 +109,10 @@
     }
 
     request(options, function (error, response, body) {
-      console.log(error);
       if (!error && response.statusCode == 200) {
         console.log(body) // Show the HTML for the Google homepage.
+      } else {
+        console.log('error ', error);
       }
     });
   };
