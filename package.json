@@ -1,0 +1,17 @@
+{
+  "name": "monzo-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Burdon",
+  "license": "ISC",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "browserify": "^13.1.0",
+    "request": "^2.75.0"
+  }
+}
